@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title> Explorando entornos en 360º</title>
+    <meta name="description" content="Dos escenas de realidad virtual con A-Frame">
+    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+
+    <style>
+        body{
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #e9eef2;
+            color: #203040;    
+        }
+        #pagina {
+      width: 900px;
+      max-width: 96%;
+      margin: auto;
+    }
+
+    #header {
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    #header h1 {
+      margin: 8px 0;
+      font-size: 27px;
+    }
+
+    #header p {
+      margin: 6px 0 12px;
+    }
+
+    #menu {
+      text-align: center;
+      padding: 8px;
+    }
+
+    #menu button {
+      margin: 4px;
+      padding: 10px 17px;
+      border: 0;
+      border-radius: 4px;
+      background-color: #315a75;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #menu button:hover,
+    #menu button.actiu {
+      background-color: #6ca6bd;
+      color: #102533;
+    }
+
+    #VRarea {
+      position: relative;
+      height: 450px;
+      background-color: black;
+    }
+
+    .escena {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .escena.activa {
+      display: block;
+    }
+
+    .escena a-scene {
+      width: 100%;
+      height: 100%;
+    }
+
+    #info {
+      text-align: center;
+      padding: 12px 5px 18px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      #VRarea {
+        height: 360px;
+      }
+
+      #header h1 {
+        font-size: 22px;
+      }
+    }
+    </style>
+</head>
+<body>
+    <div id="pagina">
+        <div id="header">
+            <h1>Explorando entornos en 360º</h1>
+            <p>Dos experiencias de realidad virtual con A-Frame</p>
+        </div>
+        <div id="menu">
+            <button id="botoSky" class="actiu" onclick="canviarEscena('sky')">
+                Escena 1: Montaña
+            </button>
+            <button id="botoVideo" onclick="canviarEscena('video')">
+                Escena 2: Debajo del agua
+            </button>
+        </div>
+        <div id="VRarea">
+          <div id="sky" class="escena activa">
+        <a-scene embedded>
+          <a-assets>
+            <img id="texturaMontana" src="recursos/textura_montana.png">
+            <img id="imatge360" src="recursos/image360.png">
+          </a-assets>
+
+          <a-sky id="image-360" radius="10" src="#imatge360"></a-sky>
+          <a-box position="-3 1 -4"
+                 rotation="0 25 0"
+                 scale="1.2 1.2 1.2"
+                 src="#texturaMontana">
+            <a-animation attribute="position"
+                         direction="alternate"
+                         dur="2500"
+                         repeat="indefinite"
+                         to="-3 1.5 -4">
+            </a-animation>
+            <a-animation attribute="rotation"
+                         begin="mouseenter"
+                         dur="700"
+                         to="0 385 0">
+            </a-animation>
+          </a-box>
+
+          <a-camera rotation="0 90 0">
+            <a-cursor color="#FF66FF"></a-cursor>
+          </a-camera>
+        </a-scene>
+      </div>
+      <div id="video" class="escena">
+        <a-scene embedded>
+          <a-assets>
+            <img id="texturaMar" src="recursos/textura_mar.png">
+            <video id="video360"
+                   autoplay
+                   loop="true"
+                   muted
+                   playsinline
+                   src="recursos/video360.mp4">
+            </video>
+          </a-assets>
+
+          <a-videosphere src="#video360"></a-videosphere>
+
+          <!-- Objecte decoratiu diferent de la primera escena -->
+          <a-box position="3 1 -4"
+                 rotation="0 -25 0"
+                 scale="1 1.5 1"
+                 src="#texturaMar">
+            <a-animation attribute="position"
+                         direction="alternate"
+                         dur="2200"
+                         repeat="indefinite"
+                         to="3 1.6 -4">
+            </a-animation>
+            <a-animation attribute="rotation"
+                         begin="mouseenter"
+                         dur="700"
+                         to="360 335 0">
+            </a-animation>
+          </a-box>
+
+          <a-camera>
+            <a-cursor color="#FF66FF"></a-cursor>
+          </a-camera>
+        </a-scene>  
+        </div>
+    </div>
+    <script>
+        function canviarEscena(nom) {
+      document.getElementById("sky").classList.remove("activa");
+      document.getElementById("video").classList.remove("activa");
+      document.getElementById("botoSky").classList.remove("actiu");
+      document.getElementById("botoVideo").classList.remove("actiu");
+
+      document.getElementById(nom).classList.add("activa");
+
+      if (nom === "sky") {
+        document.getElementById("botoSky").classList.add("actiu");
+        document.getElementById("video360").pause();
+      } else {
+        document.getElementById("botoVideo").classList.add("actiu");
+        var video = document.getElementById("video360");
+        video.play().catch(function(error) {
+          console.log("El navegador necessita una acció per iniciar el vídeo.", error);
+        });
+      }
+    }
+    </script>
+</body>
+</html>
